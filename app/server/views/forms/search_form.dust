@@ -1,0 +1,18 @@
+<div class = "bootstrap-iso">
+<div class = "row">
+  <form id="answers_post" action="/collaboration/search" method="post" class="form-s">
+    <div class="col-md-6  ">
+        <div id="custom-search-input">
+            <div class="input-group col-md-12">
+                <input type="text" name = "search_topic" class="form-control" placeholder="Search Topics" />
+                <span class="input-group-btn">
+                    <button class="btn btn-info btn-lg" type="submit">
+                        <i class="glyphicon glyphicon-search"></i>
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
+  </form>
+</div>
+</div>

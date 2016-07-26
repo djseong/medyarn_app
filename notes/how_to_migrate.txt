@@ -1,0 +1,5 @@
+Install sequelize cli: 
+npm install -g sequelize-cli
+
+1. go to folder with app (entrecoder-node-starter)
+2. type sequelize db:migrate

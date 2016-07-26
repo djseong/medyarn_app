@@ -1,0 +1,23 @@
+{>layout/}
+
+{<scripts}
+<script>
+requirejs(['main'],function(){
+  requirejs(['view/account_profile']);
+});
+</script>
+{/scripts}
+
+{<content}
+<div id="main">
+  <div class="container">
+    <div class="g75 pl"> 
+      <div class="w5 pad-all mrg-l">  
+        <h2>Create Collaboration</h2>
+        {>"widgets/message"/}
+        {>"forms/create_collab_form"/}
+      </div>
+    </div>
+  </div> 
+</div>  
+{/content}

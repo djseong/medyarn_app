@@ -1,0 +1,2 @@
+control panel -> services -> mysql -> start
+command prompt: http://www.tutorialspoint.com/mysql/mysql-select-query.htm

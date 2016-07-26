@@ -1,0 +1,60 @@
+{>layout/}
+
+{<content}
+
+<div id = "main">
+  <div class = "container">
+  {#question}
+  <div id = "question">
+    <div id = "q_topic"> Topic: {Topic.name} </div>
+    <h1>Title: {title} </h1>
+    <div id = "q_username"> Created by: {Profile.username} </div> 
+    <div id = "q_text"> <p> Question: {text} {>"forms/answers_form" t="Answer"/} </p> </div>
+  </div>
+  {/question}
+  {#answers}
+    {^answer_id} 
+    <div id = {id} class = "root"> 
+      <div class = "roottext">
+      {text}
+      </div>
+      <br>
+      {>"forms/answers_form" mode="answer_id" t="Comment"/}
+      <br> 
+    </div>
+    {/answer_id}
+    {#answers checkid=.id}
+      {@eq key=checkid value=answer_id}
+        <div id = "reply{id}" style ="display:none;"> 
+         {>"forms/answers_form" mode="answer_id" t="Reply"/} 
+        </div>
+        <script> 
+          document.getElementById({answer_id}).innerHTML += "<div id = {id} style='margin-left:20px' > {text} <div id = 'show{id}'> <a href = '' onclick='showDiv({id}); return false;'> Reply </a> </div>
+          </div>"
+        </script>
+      {/eq}
+    {~n}
+    {/answers}
+    {~n}
+  {/answers}
+
+<script>
+
+function showDiv(i) {
+var r = document.getElementById("reply" + i);
+var $r = $(r);
+if ($r.hasClass("clicked-once"))
+{
+  $r.hide();
+  $r.removeClass("clicked-once");
+}
+else {
+  $r.appendTo(document.getElementById("show" + i));
+  $r.show();
+  $r.addClass("clicked-once");
+}}
+
+
+</script>
+
+{/content}

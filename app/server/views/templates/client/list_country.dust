@@ -1,0 +1,7 @@
+{?country}
+    <ul>
+    {#country}
+    <li><div>{country.name}, {counry.population}</div></li>
+    {/country}
+    </ul>
+{/country}

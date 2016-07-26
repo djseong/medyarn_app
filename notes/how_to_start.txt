@@ -1,0 +1,10 @@
+1. open command prompt
+2. navigate to c:\program files\mongodb\server\3.2\bin 
+3. type mongod --dbpath c:\node\nodetest1\data\ or just mongod for default
+4. open new command prompt and go to c:\program files\mongodb\server\3.2\bin 
+5. type mongo
+6. should see connecting to: test
+7. open new command prompt and go to c:\users\daniel\desktop\entrecoder-node-starter
+8. type npm start
+9. should see "Listening on port xxx"
+10. go to localhost:xxx in web browser

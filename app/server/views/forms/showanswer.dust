@@ -1,0 +1,9 @@
+<form id={id} action="/collaboration" method="post" class="form-s">
+
+<input type = "hidden" name = "question_id" value = {id} />
+<input type = "hidden" name = "title" value = "{title}" />
+<input type = "hidden" name = "created_by" value = "{Profile.username}" />
+<input type = "hidden" name = "topic" value = "{Topic.name}" /> 
+<input type = "hidden" name = "text" value = "{text}" /> 
+
+</form>

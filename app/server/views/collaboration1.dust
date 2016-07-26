@@ -1,0 +1,42 @@
+{>layout/}
+
+{<scripts}
+<script>
+requirejs(['main'],function(){
+  requirejs(['view/account_profile']);
+});
+</script>
+{/scripts}
+
+{<content}
+<div id="main">
+  <div id = "collab_table">
+    <table style = "width:100%">
+      <tr style = "font-size:18px">
+        <th> Title </th>
+        <th> Creator </th>
+        <th> Topic </th>
+        <th> Question </th>
+        <th> Answer </th> 
+        <th> Pictures </th>
+        <th> Upvoter Count </th>
+        <th> Downvoter Count </th> 
+        <th> Anonymous </th>
+      </tr>
+      {#collaboration}
+      <tr style = "font-size: 14px">
+        <td> {title} </th>
+        <td> {Profile.username}</td>
+        <td> {Topic.name} </td>
+        <td> {text} {>"forms/answers_form" mode="question_id" /} </td>
+        <td> {#Answers} <div> {text} {>"forms/answers_form" mode="answer_id" /} </div> {~n} {/Answers} </td>
+        <td> {#Pictures} <p> {file_path} </p> {~n} {/Pictures}</td>
+        <td> {upvoter_count} </td>
+        <td> {downvoter_count} </td>
+        <td> {is_anonymous} </td>
+      </tr> {~n}
+      {/collaboration}
+    </table>
+  </div>
+</div>  
+{/content}

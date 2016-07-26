@@ -1,0 +1,19 @@
+In api.js
+--------
+how does app.get("messages").signup.error.email work? 
+
+In signup.js - plugins
+----------------------
+something wrong with sending email? the  function(email,p,callback) part -- fixed: have to enter email username and password in email.js
+
+In plugins/authenticate.js 
+--------------------------
+line 17: changed data status from 'a' to 'r'. wat's the difference? -- i think 'a' is for activated (click on email)
+
+In api.js
+---------
+Profile not working - redirects to itself? 
+added new code in controllers/account.js - lines 80-90 -- fixed: profile created with pid once email is activated (api.js line 345)
+collaboration - getting reference error: callback not defined whenever i call createone in the callback function
+
+work on not using session variables in api.js showanswer
