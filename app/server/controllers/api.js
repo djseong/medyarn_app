@@ -15,6 +15,40 @@ var fs = require('fs')
 , Topic = app.get('models').Topic
 , Answers = app.get('models').Answers;
 
+exports.delete_post = function (req, res, next){ 
+	console.log("deleting question id")
+	console.log(req.body.question_id)
+
+	Topic.removeOne(req.body.question_id, function(error, pt) {
+		if (error) {
+			res.status(400).send(error)
+		}
+		else {
+			Answers.destroy({
+				where: {
+					question_id : req.body.question_id
+				}
+			})
+			.then(function(affectedrows) {
+				console.log("here is # of deleted rows")
+				console.log(affectedrows)
+				Question.removeOne(req.body.question_id, function(error, pt) {
+					if (error) {
+						res.status(400).send(error)
+					}
+					else {
+						//console.log("succeeded deleting question")
+						console.log("redirecting...")
+						res.redirect('/collaboration')
+					}
+				})
+			})
+		}
+	})
+
+	
+}
+
 exports.showanswerPost = function (req,res,next) {
 	if (req.body.answer != "")
 	{

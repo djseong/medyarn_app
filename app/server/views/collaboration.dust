@@ -8,6 +8,9 @@
     {>"forms/search_form"/}       
   <div id = "title"> Top Posts </div>
   {#collaboration}
+  <div id = "delete"> 
+    {>"forms/delete"/}
+  </div> 
   <div id = "post">
     <div id = "topic"> Topic: {Topic.name} </div>
   <div id = "post_title">

@@ -50,6 +50,22 @@ module.exports = function(sequelize, Sequelize) {
         }).catch(function(error) {
             callback(error);
           });
+    },
+    removeOne: function(id, callback){ 
+      Topic.findOne({where:{question_id:id}}).then(function (p) {
+        if (p) {
+        p.destroy()
+        .then(function(pd) {
+          callback(null,pd);
+        })       
+        .catch(function(error) {
+          callback(error);
+        });
+      }
+      else {
+        callback(null)
+      }
+      }); 
     }
     },
   });

@@ -1,4 +1,4 @@
-var mysql = require('mysql')
+/*var mysql = require('mysql')
   , async = require('async')
 
 var PRODUCTION_DB = 'app_data'
@@ -51,3 +51,4 @@ exports.drop = function(tables, done) {
     pool.query('DELETE * FROM ' + name, cb)
   }, done)
 }
+*/

@@ -75,7 +75,18 @@ module.exports = function(sequelize, Sequelize) {
         }).catch(function(error) {
             callback(error);
           });
-    }
+    },
+    removeOne: function(id, callback){ 
+      Question.findById(id).then(function (p) {
+        p.destroy()
+        .then(function(pd) {
+          callback(null,pd);
+        })
+        .catch(function(error) {
+          callback(error);
+        });
+      }); 
+    },
     },
   });
   return Question;
