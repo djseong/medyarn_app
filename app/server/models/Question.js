@@ -60,12 +60,12 @@ module.exports = function(sequelize, Sequelize) {
           callback(error);
         });
     },
-    updateOne: function(id,data,callback){ 
-      Question.findOne({where:{id:id}})
+    restoreOne: function(id,callback){ 
+      Question.findOne({where:{id:id}, paranoid: false})
       // p is first entry of profile table with pid: id
       // returns instance, not object
         .then(function (p) { 
-          p.updateAttributes(data)
+          p.restore()
             .then(function(up) {
               callback(null,up);
             })
@@ -77,7 +77,7 @@ module.exports = function(sequelize, Sequelize) {
           });
     },
     removeOne: function(id, callback){ 
-      Question.findById(id).then(function (p) {
+      Question.findOne({where: {id:id}}).then(function (p) {
         p.destroy()
         .then(function(pd) {
           callback(null,pd);

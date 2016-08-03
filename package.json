@@ -10,6 +10,7 @@
     "test": "mocha --reporter spec --timeout 5000"
   },
   "dependencies": {
+    "autocorrect": "latest",
     "async": "latest",
     "body-parser": "latest",
     "connect-flash": "latest",

@@ -8,12 +8,52 @@ var fs = require('fs')
 ,	signup = require('../../plugins/signup')
 , em = require('../../plugins/email')
 , crypto = require('crypto')
-,	Person = app.get('models').Person
-,	Profile = app.get('models').Profile
+, autocorrect = require('autocorrect')()
+, Person = app.get('models').Person
+, Profile = app.get('models').Profile
 , Question = app.get('models').Question
 , Pictures = app.get('models').Pictures
 , Topic = app.get('models').Topic
 , Answers = app.get('models').Answers;
+
+function getWords() {
+	// Topic.findAll().then(function (topics) {
+
+	// })
+}
+
+exports.undo_delete_post = function(req, res, next) {
+	console.log("undo question id")
+	console.log(req.session.question_id)
+
+	Question.restoreOne(req.session.question_id, function(error, result) {
+		if (error) {
+			console.log("question error")
+			console.log(error)
+			res.status(400).send(error)
+		}
+		else {
+			Topic.restoreOne(req.session.question_id, function(error, result) {
+				if (error) {
+					console.log(error)
+					res.status(400).send(error)
+				}
+				else {
+					Answers.restoreAll(req.session.question_id, function(error, count, rows) {
+						if (error) {
+							console.log(error)
+							res.status(400).send(error)
+						}
+						else {
+							res.redirect('/collaboration')
+						}
+					})
+				}
+			})
+		}
+	})
+
+}
 
 exports.delete_post = function (req, res, next){ 
 	console.log("deleting question id")
@@ -37,9 +77,12 @@ exports.delete_post = function (req, res, next){
 						res.status(400).send(error)
 					}
 					else {
-						//console.log("succeeded deleting question")
+						console.log("succeeded deleting question")
+						console.log(pt.title)
+						req.session.question_id = req.body.question_id
+						var string = encodeURIComponent(pt.title)
 						console.log("redirecting...")
-						res.redirect('/collaboration')
+						res.redirect('/collaboration?title=' + string)
 					}
 				})
 			})
@@ -72,8 +115,32 @@ exports.showanswerPost = function (req,res,next) {
 }
 
 exports.showanswer = function (req,res,next) {
+	async.series({
+		question: function(callback) {
+			Question.findAll ({
+			where: {id: req.session.question_id},
+			include: [Profile, Topic]
+			}).then(function (question) {
+				callback(null, question)
+			})
+		},
+		answers: function(callback) {
+			Answers.findAll({
+			where: {question_id: req.session.question_id },
+			order: [['answer_id'], ['id']]
+			}).then (function (answers) {
+				callback(null, answers)
+			})
+		},
+		question_id: function(callback) {
+			callback(null, req.session.question_id)
+		}},
+		function(err, results) {
+			res.render ('showanswer', results)
+		})
 
-	Question.findAll ({
+
+	/*Question.findAll ({
 		where: {id: req.session.question_id},
 		include: [Profile, Topic]
 	}).then (function (q_p_t) {
@@ -83,8 +150,6 @@ exports.showanswer = function (req,res,next) {
 	}).then (function (answers) {
 		//console.log ('here')
 		//console.log (JSON.stringify(p1));
-		Profile.findOne({where: {pid: req.session.passport.user}
-	}).then (function (uname) {
 		//console.log("here is user")
 		//console.log(uname)
 		//console.log ("here is the answers")
@@ -96,10 +161,10 @@ exports.showanswer = function (req,res,next) {
 		'answers': answers,
 	})
 	})
-	}) })
+	})
 	.catch(function(error) {
 		console.log (error)
-	})
+	})*/
 		
 }
 
@@ -145,29 +210,21 @@ exports.collaboration = function (req, res, next){
 			}
 			else
 			{
+				console.log("here is deleted question title")
+				console.log(req.query.title)
 				//console.log("printing assoc...")
 				//console.log(p[0].Pictures[0].file_path)
 				//console.log(JSON.stringify(p))
 				res.render('collaboration', 
-				{'collaboration': p})
+				{
+					'collaboration': p, 
+					'deleted_title' : req.query.title,
+					'deleted_id': req.session.question_id
+				})
 			}
-		});/*
-		/*Question.findAll({include: [{
-			model: Pictures, where: { include: [{ model: Answers, attributes: ["id", "question_id", "answer_id"], include: [{ model: Answers}]
-		}
-			]}
-		}] })*/ /*
-		Question.findAll({include: [{
-				all: true, nested: true, raw: true
-
-			}]
-			})*/
-		/*.then(function(p) {
-			console.log (JSON.stringify(p))
-		})*/
-
-	
+		});
 }
+
 exports.create_collaborationPost = function (req, res, next){ 
 	Question.createOne ({
 		title: req.body.collab_title,
@@ -341,7 +398,7 @@ exports.signinPost = function(req, res, next) {
 			    if(err){
 			      //log system error
 			    }
-			    return res.redirect('/home');
+			    return res.redirect('/collaboration');
 			  })
 			});
 		}

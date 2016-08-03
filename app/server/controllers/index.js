@@ -60,6 +60,8 @@ module.exports = function(app) {
 
 	app.post('/collaboration/delete', api.delete_post)
 
+	app.post('/collaboration/undo', api.undo_delete_post)
+
 	app.post ('/showanswer', api.showanswerPost)
 	app.get ('/showanswer', authorize.user, api.showanswer)
 

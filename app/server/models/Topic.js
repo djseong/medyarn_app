@@ -4,14 +4,18 @@ module.exports = function(sequelize, Sequelize) {
   var Topic = sequelize.define('Topic', {
       id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
       name: { type: Sequelize.STRING, allowNull: true },
-      question_id: { type: Sequelize.INTEGER, allowNull: false, references: { model:"question", key: "id" } }
+      question_id: { type: Sequelize.INTEGER, allowNull: false, references: { model:"question", key: "id" } },
+      created_at: { type: Sequelize.DATE, allowNull: true },
+      updated_at: { type: Sequelize.DATE, allowNull: true },
+      deleted_at: { type: Sequelize.DATE, allowNull: true }
 
   }, {
     // no spacing, use '_'
     underscored: true,
     // disable modification of table name
     freezeTableName: true,
-    timestamps: false,
+    paranoid: true,
+    timestamps: true,
     instanceMethods: {},
     classMethods: {
       // Associates profile to person through key pid
@@ -35,12 +39,12 @@ module.exports = function(sequelize, Sequelize) {
           callback(error);
         });
     },
-    updateOne: function(id,data,callback){ 
-      Topic.findOne({where:{file_path:id}})
+    restoreOne: function(id,callback){ 
+      Topic.findOne({where:{question_id:id}, paranoid: false})
       // p is first entry of profile table with pid: id
       // returns instance, not object
         .then(function (p) { 
-          p.updateAttributes(data)
+          p.restore()
             .then(function(up) {
               callback(null,up);
             })

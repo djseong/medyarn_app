@@ -1,6 +1,12 @@
 <div class = "bootstrap-iso">
-	<form id="delete_post" action="/collaboration/delete" method="post" class="form-s">
-		<input type="hidden" name=question_id value={id} />
-		<button type="submit">Delete</button>
-	</form>
+	<div class = "container">
+		<div class = "row"> 
+			<div class = "col-xs-3"> 
+				<form id="delete_post" action="/collaboration/delete" method="post" class="form-s">
+					<input type="hidden" name=question_id value={id} />
+						<button type="submit" class="btn btn-delete">Delete</button>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>

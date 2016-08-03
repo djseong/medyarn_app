@@ -5,12 +5,13 @@
 
 <div id = "main">
   <div class = "container">
+  {?deleted_title} 
+    <p> Deleted question "{deleted_title}" </p>
+    {>"forms/undo_delete"/}
+  {/deleted_title}
     {>"forms/search_form"/}       
   <div id = "title"> Top Posts </div>
-  {#collaboration}
-  <div id = "delete"> 
-    {>"forms/delete"/}
-  </div> 
+  {#collaboration} 
   <div id = "post">
     <div id = "topic"> Topic: {Topic.name} </div>
   <div id = "post_title">
@@ -30,6 +31,9 @@
    <img src = {file_path} alt = "pics">
    </div>
    {/Pictures}
+  <div id = "delete"> 
+    {>"forms/delete"/}
+  </div>
   </div> {~n}
   {/collaboration}
   </div>

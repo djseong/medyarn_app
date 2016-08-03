@@ -8,7 +8,10 @@ module.exports = {
     {
       id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
       name: { type: Sequelize.STRING, allowNull: true },
-      question_id: { type: Sequelize.INTEGER, allowNull: false, references: { model:"question", key: "id" } }
+      question_id: { type: Sequelize.INTEGER, allowNull: false, references: { model:"question", key: "id" } },
+      created_at: { type: Sequelize.DATE, allowNull: true },
+      updated_at: { type: Sequelize.DATE, allowNull: true },
+      deleted_at: { type: Sequelize.DATE, allowNull: true }
     },
     {
       engine: 'INNODB', // default: 'InnoDB'
@@ -19,8 +22,6 @@ module.exports = {
   },
   // downgrades database (reverse changes)
   down: function(queryInterface, Sequelize) {
-    queryInterface.sequelize.query('IF EXISTS (SELECT * FROM question) ALTER TABLE topic DROP FOREIGN KEY topic_ibfk_1');
-
     // delete profile table
     queryInterface.dropTable('topic');
   }

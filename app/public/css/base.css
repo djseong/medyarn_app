@@ -965,4 +965,8 @@ h1.sub-title, h2.sub-title, h3.sub-title, h4.sub-title, h5.sub-title {
     font-size: 15px;
 }
 
+#delete {
+  margin-right: 5px;
+}
+
 

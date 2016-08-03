@@ -47,21 +47,32 @@ module.exports = function(sequelize, Sequelize) {
           callback(error);
         });
     },
-    updateOne: function(id,data,callback){ 
-      Answers.findOne({where:{id:id}})
-      // p is first entry of profile table with pid: id
-      // returns instance, not object
-        .then(function (p) { 
-          p.updateAttributes(data)
-            .then(function(up) {
-              callback(null,up);
-            })
-            .catch(function(error) {
-                callback(error);
-              });
-        }).catch(function(error) {
-            callback(error);
-          });
+    restoreAll: function(id,callback){ 
+      Answers.update(
+        { deleted_at: null},
+        { where: {question_id: id}, paranoid: false}
+        ).spread(function(affectedCount, affectedRows) {
+          callback(null, affectedCount, affectedRows)
+        })
+        .catch(function(error) {
+          callback(error)
+        })
+
+      // Answers.findAll({where:{question_id:id}, paranoid: false})
+      // // p is first entry of profile table with pid: id
+      // // returns instance, not object
+      //   .then(function (p) { 
+      //     console.log(p)
+      //     p.restore()
+      //       .then(function(up) {
+      //         callback(null,up);
+      //       })
+      //       .catch(function(error) {
+      //           callback(error);
+      //         });
+      //   }).catch(function(error) {
+      //       callback(error);
+      //     });
     },
     removeOne: function(id,data,callback){ 
       Answers.findById(id).then(function (p) {
