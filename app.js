@@ -43,7 +43,7 @@ if ('production' == env) {
 c.argv().env().file({ file: './config.json' });
 
 var port = c.get(env).port;
-//var mongo = new MongoStore({ url: c.get(env).mongo.url }); 
+var mongo = new MongoStore({ url: c.get(env).mongo.url }); 
 
 app.set('messages', c.get('messages'));
 app.set('uhttps', c.get(env).https);
@@ -63,7 +63,7 @@ app.locals.file_store = app.get('file_store');
 /** set session variables **/
 var session_options = {
   // default store is memorystore which saves to RAM - not recommended for production 
-  //store: mongo,
+  store: mongo,
   secret: c.get('session').secret,
   cookie: { secure: false, maxAge: new Date(Date.now() + (3 * 3600000))},
   saveUninitialized: true,

@@ -8,7 +8,7 @@ var fs = require('fs')
 ,	signup = require('../../plugins/signup')
 , em = require('../../plugins/email')
 , crypto = require('crypto')
-, autocorrect = require('autocorrect')()
+, autocorrect = require('autocorrect')({words: ['new topic', 'weird']})
 , Person = app.get('models').Person
 , Profile = app.get('models').Profile
 , Question = app.get('models').Question
@@ -214,12 +214,13 @@ exports.collaboration = function (req, res, next){
 				console.log(req.query.title)
 				//console.log("printing assoc...")
 				//console.log(p[0].Pictures[0].file_path)
-				//console.log(JSON.stringify(p))
+				console.log(JSON.stringify(p))
 				res.render('collaboration', 
 				{
 					'collaboration': p, 
 					'deleted_title' : req.query.title,
-					'deleted_id': req.session.question_id
+					'deleted_id': req.session.question_id,
+					'current_person_id': req.session.passport.user
 				})
 			}
 		});

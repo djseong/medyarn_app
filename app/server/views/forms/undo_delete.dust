@@ -1,5 +1,2 @@
-<div class = "bootstrap-iso">
-	<form id="undo_delete" action="/collaboration/undo" method="post" class="form-s">
-		<button type="submit"> Undo </button>
-	</form>
-</div>
+<form id="undo_delete_q" action="/collaboration/undo" method="post" class="form-s">
+</form>

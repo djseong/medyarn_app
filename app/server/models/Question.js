@@ -65,6 +65,10 @@ module.exports = function(sequelize, Sequelize) {
       // p is first entry of profile table with pid: id
       // returns instance, not object
         .then(function (p) { 
+          if (!p){
+            callback("no question selected"); 
+          }
+          else {
           p.restore()
             .then(function(up) {
               callback(null,up);
@@ -72,6 +76,7 @@ module.exports = function(sequelize, Sequelize) {
             .catch(function(error) {
                 callback(error);
               });
+          }
         }).catch(function(error) {
             callback(error);
           });

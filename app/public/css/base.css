@@ -969,4 +969,27 @@ h1.sub-title, h2.sub-title, h3.sub-title, h4.sub-title, h5.sub-title {
   margin-right: 5px;
 }
 
+#undo_delete {
+  background-color: #f9edbe;
+  border: 2px solid #f0c36d;
+  border-radius: 5px;
+  padding: 10px;
+  display:table;
+  margin: 0 auto;
+  margin-top: 20px;
+  text-align: center;
+
+}
+
+#undo_delete p, a {
+  display: inline;
+  font-weight: bold;
+
+}
+
+#undo_delete a {
+  margin-left: 8px;
+  text-decoration: underline;
+}
+
 

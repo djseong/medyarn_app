@@ -6,8 +6,12 @@
 <div id = "main">
   <div class = "container">
   {?deleted_title} 
-    <p> Deleted question "{deleted_title}" </p>
-    {>"forms/undo_delete"/}
+    <div id = "undo_delete"> 
+     {>"forms/undo_delete"/}
+      <p> Deleted question "{deleted_title}" </p>
+      <a href="" onclick = "document.getElementById('undo_delete_q').submit();return false;">
+      Undo </a>
+    </div> 
   {/deleted_title}
     {>"forms/search_form"/}       
   <div id = "title"> Top Posts </div>
@@ -31,9 +35,11 @@
    <img src = {file_path} alt = "pics">
    </div>
    {/Pictures}
-  <div id = "delete"> 
-    {>"forms/delete"/}
-  </div>
+   {@eq key=created_person_id value=current_person_id}
+    <div id = "delete"> 
+      {>"forms/delete"/}
+    </div>
+    {/eq}
   </div> {~n}
   {/collaboration}
   </div>

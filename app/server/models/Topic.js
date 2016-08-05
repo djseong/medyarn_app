@@ -44,6 +44,10 @@ module.exports = function(sequelize, Sequelize) {
       // p is first entry of profile table with pid: id
       // returns instance, not object
         .then(function (p) { 
+          if (!p) {
+            callback(null)
+          }
+          else {
           p.restore()
             .then(function(up) {
               callback(null,up);
@@ -51,9 +55,10 @@ module.exports = function(sequelize, Sequelize) {
             .catch(function(error) {
                 callback(error);
               });
+          }
         }).catch(function(error) {
             callback(error);
-          });
+          })
     },
     removeOne: function(id, callback){ 
       Topic.findOne({where:{question_id:id}}).then(function (p) {
