@@ -27,3 +27,6 @@ Thumbs.db
 
 # npm modules
 node_modules
+
+# bat files
+*.bat
