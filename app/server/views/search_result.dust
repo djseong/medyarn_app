@@ -15,14 +15,14 @@
     <h1>
     {>"forms/showanswer"/}
     <a href="" onclick = "document.getElementById({id}).submit();return false;"> 
-    Title: {Question.title} 
+    Title: {title} 
     </a>
     </h1>
   </div>
   <div id = "username">
-    Created by: {Question.Profile.username} 
+    Created by: {Profile.username} 
   </div> 
-   <div id = "text"> <p> Question: {Question.text} </p> </div>
+   <div id = "text"> <p> Question: {text} </p> </div>
    {#Pictures}
    <div id = "pictures"> 
    <img src = {file_path} alt = "pics">

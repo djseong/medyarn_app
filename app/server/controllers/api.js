@@ -23,73 +23,60 @@ function getWords() {
 }
 
 exports.undo_delete_post = function(req, res, next) {
-	console.log("undo question id")
-	console.log(req.session.question_id)
-
-	Question.restoreOne(req.session.question_id, function(error, result) {
-		if (error) {
-			console.log("question error")
-			console.log(error)
-			res.status(400).send(error)
-		}
-		else {
+	async.series([
+		function(callback) {
+			Question.restoreOne(req.session.question_id, function(error, result) {
+				callback(error, result)
+			})},
+		function(callback) {
 			Topic.restoreOne(req.session.question_id, function(error, result) {
-				if (error) {
-					console.log(error)
-					res.status(400).send(error)
-				}
-				else {
-					Answers.restoreAll(req.session.question_id, function(error, count, rows) {
-						if (error) {
-							console.log(error)
-							res.status(400).send(error)
-						}
-						else {
-							res.redirect('/collaboration')
-						}
-					})
-				}
-			})
+				callback(error, result)
+			})},
+		function(callback) {
+			Answers.restoreAll(req.session.question_id, function(error, count, rows) {
+				callback(error, count)
+			})}
+		],
+		function(err, results) {
+			if (err) {
+				res.status(400).send(error)
+			}
+			else {
+				res.redirect('/collaboration')
+			}
 		}
-	})
-
+	)
 }
 
 exports.delete_post = function (req, res, next){ 
-	console.log("deleting question id")
-	console.log(req.body.question_id)
-
-	Topic.removeOne(req.body.question_id, function(error, pt) {
-		if (error) {
-			res.status(400).send(error)
-		}
-		else {
-			Answers.destroy({
-				where: {
-					question_id : req.body.question_id
-				}
+	async.series({
+		topic: function(callback) {
+			Topic.removeOne(req.body.question_id, function(error, pt) {
+				callback(error)
 			})
-			.then(function(affectedrows) {
-				console.log("here is # of deleted rows")
-				console.log(affectedrows)
-				Question.removeOne(req.body.question_id, function(error, pt) {
-					if (error) {
-						res.status(400).send(error)
-					}
-					else {
-						console.log("succeeded deleting question")
-						console.log(pt.title)
-						req.session.question_id = req.body.question_id
-						var string = encodeURIComponent(pt.title)
-						console.log("redirecting...")
-						res.redirect('/collaboration?title=' + string)
-					}
-				})
+		},
+		answers: function(callback) {
+			Answers.destroy({where: {question_id : req.body.question_id}})
+			.then(callback(null))
+			.catch(function(error) {
+				callback(error)
 			})
-		}
-	})
-
-	
+		},
+		question: function(callback) {
+			Question.removeOne(req.body.question_id, function(error, pt) {
+				callback(error, pt)
+			})
+		}},
+		function(err, results) {
+			if (err) {
+				res.status(400).send(error)
+			}
+			else {
+				req.session.question_id = req.body.question_id
+				var string = encodeURIComponent(results.question.title)
+				res.redirect('/collaboration?title=' + string)
+			}
+		})
 }
 
 exports.showanswerPost = function (req,res,next) {
@@ -170,25 +157,52 @@ exports.showanswer = function (req,res,next) {
 
 exports.search_post = function(req, res, next) {
 	if (req.body.search_topic) {
-	Topic.findAll({
-		where: {name: req.body.search_topic},
-		include: [{model: Question, include: [Profile, Pictures]}]
-	}).then(function (result) {
-		console.log (JSON.stringify(result))
-		res.render('search_result', 
-		{
-			'result': result
-		})
+		Question.findAll({
+			include:[{
+				model: Topic,
+				where: {name: req.body.search_topic},
 
-	})
-	.catch(function(error) {
-		console.log(error)
-	})
+				model: Profile, 
+				where: {username: req.body.search_topic}
+			}],
+
+		}).then(function(result) {
+			console.log(JSON.stringify(result)); 
+			res.render('search_result', 
+			{
+				'result': result
+			})
+		})
+		.catch (function(error){
+			console.log(error);
+		})
 	}
-	else {
-		res.redirect('back')
-	}
-}
+		else {
+			console.log("no resutls");
+			res.redirect('back');
+		}
+
+
+// 	if (req.body.search_topic) {
+// 	Topic.findAll({
+// 		where: {name: req.body.search_topic},
+// 		include: [{model: Question, include: [Profile, Pictures]}]
+// 	}).then(function (result) {
+// 		console.log (JSON.stringify(result))
+// 		res.render('search_result', 
+// 		{
+// 			'result': result
+// 		})
+
+// 	})
+// 	.catch(function(error) {
+// 		console.log(error)
+// 	})
+// 	}
+// 	else {
+// 		res.redirect('back')
+// 	}
+ }
 
 exports.answers_post = function (req,res,next) {
 	//console.log(req.body.question_id); 
@@ -210,11 +224,11 @@ exports.collaboration = function (req, res, next){
 			}
 			else
 			{
-				console.log("here is deleted question title")
-				console.log(req.query.title)
-				//console.log("printing assoc...")
-				//console.log(p[0].Pictures[0].file_path)
-				console.log(JSON.stringify(p))
+				// console.log("here is deleted question title")
+				// console.log(req.query.title)
+				// //console.log("printing assoc...")
+				// //console.log(p[0].Pictures[0].file_path)
+				// console.log(JSON.stringify(p))
 				res.render('collaboration', 
 				{
 					'collaboration': p, 
@@ -227,60 +241,57 @@ exports.collaboration = function (req, res, next){
 }
 
 exports.create_collaborationPost = function (req, res, next){ 
-	Question.createOne ({
-		title: req.body.collab_title,
-		text: req.body.collab_question,
-		created_person_id: req.session.passport.user,
-		created_profile_id: req.session.passport.user,
-		is_anonymous: 0, 
-		upvoter_count: 0,
-		downvoter_count: 0,
-		is_answered: 0
-	}, function (e,p) {
-			if(e){
-				console.log("first error");
-			} else {
-				if(!p){
-					console.log("second error")
-				} else {
-						if (req.files.length != 0) 
-						{
-							for (var i = 0; i < req.files.length; i++)
-								{
-									Pictures.createOne ({
-									file_path: req.files[i].path,
-									question_id: p.id
-									}, function (e1,p1) {
-									if (e1) {
-										console.log(e1)
-									}
-									else if (!p1) {
-										console.log ("wrong picture")
-									}
-									else {
-									callback(null, p1)
-									}})
-								}
-						}
-						if (req.body.collab_topic != "")
-						{
-							Topic.createOne ({
-								name: req.body.collab_topic,
-								question_id: p.id
-							}, function (e2, p2) {
-								if (e2) {
-									console.log ("topic error")
-								}
-								else 
-								{
-									callback(null, p2)
-								}
-							})
-						}
-							}
-							}			
+	async.waterfall([
+		function(callback) {
+			Question.createOne ({
+				title: req.body.collab_title,
+				text: req.body.collab_question,
+				created_person_id: req.session.passport.user,
+				created_profile_id: req.session.passport.user,
+				is_anonymous: 0, 
+				upvoter_count: 0,
+				downvoter_count: 0,
+				is_answered: 0
+			}, function(error, question){
+				callback(error, question)
 			})
-	res.redirect('collaboration')
+		},
+		function(question, callback) {
+			if (req.files.length != 0) 
+				{
+					var data = []
+					for (var i = 0; i < req.files.length; i++)
+						{
+							data.push({file_path: req.files[i].path, question_id: question.id})
+						}
+					console.log("picture data")
+					console.log(data)
+					Pictures.bulkCreate(data)
+					.then(function() {
+						callback(null, question)
+					})
+				}
+		},
+		function(question, callback) {
+			if (req.body.collab_topic != "")
+				{
+					Topic.createOne ({
+						name: req.body.collab_topic,
+						question_id: question.id
+					}, function(error, topic) {
+						callback(null)
+					})
+				}
+			}		
+		],
+		function(err, results) {
+			if (err) {
+				res.status(400).send(err)
+			}
+			else {
+				res.redirect('/collaboration')
+			}
+		})
 	}
 
 exports.create_collaboration = function(req, res, next){
