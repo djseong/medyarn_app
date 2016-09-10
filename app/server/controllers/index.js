@@ -55,7 +55,6 @@ module.exports = function(app) {
 
 	app.post('/collaboration', api.answers_post)
 	app.get('/collaboration', authorize.user, api.collaboration)
-//	app.get('/collaboration', function(req, res, next){console.log("hi");console.log(newapp)})
 
 	app.post('/collaboration/search', api.search_post)
 

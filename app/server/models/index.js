@@ -26,7 +26,8 @@ if ('production' == env) {
   var sequelize = new Sequelize(dbconfig.database, dbconfig.username, dbconfig.password,{
     port: dbconfig.port,
   	dialect: dbconfig.dialect,
-  	protocol: dbconfig.protocol
+  	protocol: dbconfig.protocol,
+    logging: false
   });
 
 }

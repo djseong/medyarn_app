@@ -8,19 +8,13 @@ var fs = require('fs')
 ,	signup = require('../../plugins/signup')
 , em = require('../../plugins/email')
 , crypto = require('crypto')
-, autocorrect = require('autocorrect')({words: ['new topic', 'weird']})
+, db = require('../models/index')
 , Person = app.get('models').Person
 , Profile = app.get('models').Profile
 , Question = app.get('models').Question
 , Pictures = app.get('models').Pictures
 , Topic = app.get('models').Topic
 , Answers = app.get('models').Answers;
-
-function getWords() {
-	// Topic.findAll().then(function (topics) {
-
-	// })
-}
 
 exports.undo_delete_post = function(req, res, next) {
 	async.series([
@@ -125,92 +119,35 @@ exports.showanswer = function (req,res,next) {
 		function(err, results) {
 			res.render ('showanswer', results)
 		})
-
-
-	/*Question.findAll ({
-		where: {id: req.session.question_id},
-		include: [Profile, Topic]
-	}).then (function (q_p_t) {
-	Answers.findAll({
-		where: {question_id: req.session.question_id },
-		order: [['answer_id'], ['id']]
-	}).then (function (answers) {
-		//console.log ('here')
-		//console.log (JSON.stringify(p1));
-		//console.log("here is user")
-		//console.log(uname)
-		//console.log ("here is the answers")
-		//onsole.log (answers)
-		res.render ('showanswer', 
-	{
-		'question_id': req.session.question_id,
-		'question': q_p_t,
-		'answers': answers,
-	})
-	})
-	})
-	.catch(function(error) {
-		console.log (error)
-	})*/
 		
 }
 
 exports.search_post = function(req, res, next) {
 	if (req.body.search_topic) {
-		Question.findAll({
-			include:[{
-				model: Topic,
-				where: {name: req.body.search_topic},
-
-				model: Profile, 
-				where: {username: req.body.search_topic}
-			}],
-
-		}).then(function(result) {
-			console.log(JSON.stringify(result)); 
-			res.render('search_result', 
-			{
-				'result': result
-			})
+		console.log("parsing string...")
+		var words = req.body.search_topic.split(" ")
+		console.log(words)
+		console.log("searching...")
+		db.sequelize.query("SELECT question.title, question.text, topic.name AS topic_name, profile.username AS username FROM question INNER JOIN topic\
+		ON question.id=topic.question_id AND topic.name=:search_name INNER JOIN profile ON question.created_profile_id=profile.id\
+	  UNION\
+		SELECT question.title, question.text, topic.name AS topic_name, profile.username AS username FROM question INNER JOIN topic\
+		ON question.id=topic.question_id INNER JOIN profile ON question.created_profile_id=profile.id AND profile.username=:search_name",			
+		{replacements: {search_name : req.body.search_topic}, type: db.sequelize.QueryTypes.SELECT})
+		.then(function(question){
+			console.log("mysql retrieved question title")
+			console.log(question)
 		})
-		.catch (function(error){
-			console.log(error);
+		.catch(function(error) {
+			console.log(error)
 		})
 	}
-		else {
-			console.log("no resutls");
-			res.redirect('back');
-		}
-
-
-// 	if (req.body.search_topic) {
-// 	Topic.findAll({
-// 		where: {name: req.body.search_topic},
-// 		include: [{model: Question, include: [Profile, Pictures]}]
-// 	}).then(function (result) {
-// 		console.log (JSON.stringify(result))
-// 		res.render('search_result', 
-// 		{
-// 			'result': result
-// 		})
-
-// 	})
-// 	.catch(function(error) {
-// 		console.log(error)
-// 	})
-// 	}
-// 	else {
-// 		res.redirect('back')
-// 	}
+	res.redirect('back')
  }
 
 exports.answers_post = function (req,res,next) {
-	//console.log(req.body.question_id); 
 
 	req.session.question_id = req.body.question_id;
-
-	//console.log (req.session.question_id);
-
 	res.redirect ('showanswer')
 
 }
@@ -224,11 +161,6 @@ exports.collaboration = function (req, res, next){
 			}
 			else
 			{
-				// console.log("here is deleted question title")
-				// console.log(req.query.title)
-				// //console.log("printing assoc...")
-				// //console.log(p[0].Pictures[0].file_path)
-				// console.log(JSON.stringify(p))
 				res.render('collaboration', 
 				{
 					'collaboration': p, 
@@ -260,12 +192,9 @@ exports.create_collaborationPost = function (req, res, next){
 			if (req.files.length != 0) 
 				{
 					var data = []
-					for (var i = 0; i < req.files.length; i++)
-						{
-							data.push({file_path: req.files[i].path, question_id: question.id})
+					for (var i = 0; i < req.files.length; i++) {
+						data.push({file_path: req.files[i].path, question_id: question.id})
 						}
-					console.log("picture data")
-					console.log(data)
 					Pictures.bulkCreate(data)
 					.then(function() {
 						callback(null, question)

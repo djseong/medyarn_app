@@ -24,7 +24,7 @@ var express = require('express')
 // in session to display for user
 ,   flash = require('connect-flash')
 // Access to file system - transfer of data to or 
-// from storage (thinks like rename files)
+// from storage (things like rename files)
 ,   fs = require('fs')
 // Hierarchical node.js config with files
 ,   c = require('nconf')
@@ -52,7 +52,7 @@ var env = process.env.NODE_ENV || 'development';
 
 /** set development specfic settings **/
 if ('development' == env) {
-  app.use(morgan('dev'));
+  //app.use(morgan('dev'));
 }
 
 /**	set production specfic settings **/
@@ -127,7 +127,8 @@ app.set('models', require('./app/server/models'));
 // is path to use it on, second is the function
 
 // gets any request and serves any required files in 
-// app public folder in root directory 
+// app public folder in root directory - must do for 
+// static files like css
 app.use(express.static(__dirname + '/app/public') );
 app.locals.pretty = true;
 app.use(favicon(__dirname + '/app/public/images/favicon.ico'));

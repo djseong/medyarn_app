@@ -19,11 +19,8 @@ module.exports = {
   },
   // downgrades database (reverse changes)
   down: function(queryInterface, Sequelize) {
-    queryInterface.sequelize.query('IF EXISTS (SELECT * FROM person) ALTER TABLE downvoter DROP FOREIGN KEY downvoter_ibfk_1');
-    queryInterface.sequelize.query('IF EXISTS (SELECT * FROM question) ALTER TABLE downvoter DROP FOREIGN KEY downvoter_ibfk_2'); 
 
     // delete profile table
-
     queryInterface.dropTable('downvoter');
   }
 }

@@ -57,22 +57,6 @@ module.exports = function(sequelize, Sequelize) {
         .catch(function(error) {
           callback(error)
         })
-
-      // Answers.findAll({where:{question_id:id}, paranoid: false})
-      // // p is first entry of profile table with pid: id
-      // // returns instance, not object
-      //   .then(function (p) { 
-      //     console.log(p)
-      //     p.restore()
-      //       .then(function(up) {
-      //         callback(null,up);
-      //       })
-      //       .catch(function(error) {
-      //           callback(error);
-      //         });
-      //   }).catch(function(error) {
-      //       callback(error);
-      //     });
     },
     removeOne: function(id,data,callback){ 
       Answers.findById(id).then(function (p) {

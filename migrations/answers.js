@@ -32,10 +32,6 @@ module.exports = {
   // downgrades database (reverse changes)
   down: function(queryInterface, Sequelize) {
     // delete profile table
-    queryInterface.sequelize.query('IF EXISTS (SELECT * FROM person) ALTER TABLE answers DROP FOREIGN KEY answers_ibfk_1');
-    queryInterface.sequelize.query('IF EXISTS (SELECT * FROM question) ALTER TABLE answers DROP FOREIGN KEY answers_ibfk_2'); 
-
-
     queryInterface.dropTable('answers');
   }
 }
