@@ -1,6 +1,6 @@
-# EntreCoder Node Starter
+# Medyarn App
 
-This is a node starter website for developers to build their projects upon. 
+This is an an app that allows seamless physician collaboration and real-time collective problem solving
 
 ## License
 
