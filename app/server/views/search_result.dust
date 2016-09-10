@@ -8,9 +8,9 @@
     {>"forms/search_form"/}
     <a href="/collaboration"> Return to Top Posts</a>       
   <div id = "title"> Search Results </div>
-  {#result}
+  {#question}
   <div id = "post">
-    <div id = "topic"> Topic: {name} </div>
+    <div id = "topic"> Topic: {topic_name} </div>
   <div id = "post_title">
     <h1>
     {>"forms/showanswer"/}
@@ -20,16 +20,11 @@
     </h1>
   </div>
   <div id = "username">
-    Created by: {Profile.username} 
+    Created by: {username} 
   </div> 
    <div id = "text"> <p> Question: {text} </p> </div>
-   {#Pictures}
-   <div id = "pictures"> 
-   <img src = {file_path} alt = "pics">
-   </div>
-   {/Pictures}
   </div> {~n}
-  {/result}
+  {/question}
   </div>
 </div>
 

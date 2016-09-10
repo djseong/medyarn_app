@@ -137,12 +137,12 @@ exports.search_post = function(req, res, next) {
 		.then(function(question){
 			console.log("mysql retrieved question title")
 			console.log(question)
+			res.render('search_result', question)
 		})
 		.catch(function(error) {
 			console.log(error)
 		})
 	}
-	res.redirect('back')
  }
 
 exports.answers_post = function (req,res,next) {
