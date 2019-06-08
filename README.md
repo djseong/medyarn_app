@@ -1,6 +1,6 @@
 # Medyarn App
 
-This is an an app that allows seamless physician collaboration and real-time collective problem solving
+This is an app that allows seamless physician collaboration and real-time collective problem solving
 
 So far this app can: 
 Create account and sign in,  
